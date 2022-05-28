@@ -41,4 +41,117 @@ reviews is our app
         8. Add app to INSTALLED_APPS
         9. Import the URL config in urls.py in app to urls.py in project
 
+For 1.      -Creating & changing the data Model
+    - Model for this project would be allll the information we would want for
+    each book review. So this would include, the book cover image, title
+    of the book, the rating of the book, the authors. the summary,
+    the actual review etc.
+    - We want to tie all of these pieces of data into a single Model
+    because we need all of this for each book review.
+    - We're going to open models.py in our app folder review and type
+        class Review(models.Model):
+            cover_image = models.URLField()
+            title = models.CharField(max_length=100)
+            rating = models.SmallIntegerField()
+            authors = models.CharField(max_length=100)
+            summary = models.TextField()
+            review = models.TextField()
+            created = models.DateTimeField()
+    -These would obviously change based on what we want our models to 
+    actually look like if we wanted to displayed cars for sale or
+    something, but it shows you'd need to make the class 
 
+For 2.      -Making and running Migrations
+    - Either run in your VScode terminal or stop your Django server
+    in your regular terminal. (restart after with python manage.py runserver)
+        python manage.py makemigrations
+        python manage.py migrate
+For 3.      - Create form 
+    - We haven't actually done anything with this yet since it wasn't 
+    needed for our project
+
+For 4.      - Create the Django template
+    - Create a folder in your app directory (reviews) called templates
+    - Create another directory within templates named after your app (reviews)
+    - Create a new file within this new app named main.html
+        - This is where your HTML template (aka HTML code) will live
+
+For 5.      - Create the view function in views.py
+
+- We import our Review model because we want to use it to get reviews
+from the database.
+- The list_reviews function gets all of the reviews from the database
+with Review.objects.all().
+- Then, it takes that and puts it in a dictionary stored in a variable
+named context.
+- Then, it renders the HTML in the main.html file in the reviews directory
+inside the templates directory using the data in the context variable.
+Once the HTML is generated, it is sent back to the browser.
+- Whatever value that comes back from the render function is returned
+from your list_reviews function because that's what Django expects.
+-Pay attention to the pattern for CREATING IN A VIEW FUNCTION
+
+    from reviews.models import Review
+
+        def list_reviews(request):
+            reviews = Review.objects.all()
+            context = {
+                "reviews": reviews,
+            }
+            return render(request, "reviews/main.html", context)
+    from tweets.models import Tweet
+
+
+    def list_tweets(request):
+        tweets = Tweet.objects.all()
+        context = {
+            "tweets": tweets,
+        }
+        return render(request, "tweets/main.html", context)
+
+- For later on create a function in views.py to create things that looks like
+
+    def create_review(request):
+        form = ReviewForm()
+        if request.method == "POST":
+            form = ReviewForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect("reviews_list")
+        context = {
+            "form": form,
+        }
+        return render(request, "reviews/create.html", context)
+
+- This is also a PATTERN FOR CREATING SOMETHING. All that would change is 
+the type of Form that you're using, the name of the view to redirect to, and 
+the name of the HTML template.
+
+    def create_tweet(request):
+        form = TweetForm()
+        if request.method == "POST":
+            form = TweetForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect("tweets_list")
+        context = {
+            "form": form,
+        }
+        return render(request, "tweets/create.html", context)
+
+    Line-by-line, it reads:
+
+        -Declare a function named create_review, which has a single input parameter that contains the HTTP request
+        -Create a new review form for the request
+        -If the request is a POST request, then
+        -Create a new form with the data in the HTTP POST
+        -Test to see if the data is valid
+        -Since the data is valid, save the data
+        -Redirect to the main page that contains the list of reviews and return from the function (nothing else after this will run if both if statements are true)
+        -Create a context dictionary
+        -Add the form to the dictionary
+        -CLOSE CURLY BRACE! :-)
+        -Render the template and return that to Django
+
+
+For 6.      -Create a URL mapping for the view function

@@ -3,12 +3,12 @@
 <html>
     <head>
         <title>Book Reviews</title>
-        <link rel="stylesheet" href= {% static "book-review.css" %}>
+        <link rel="stylesheet" href="{% static "book-review.css" %}">
     </head>
     <body>
         <div>My Book Reviews</div>
         <nav>
-          <a href="create.html">Create a review</a>
+          <a href="{% url "create_review" %}">Create a review</a>
         </nav>
       </header>
       <main>
@@ -16,7 +16,7 @@
         <div class="main-page-book-review">
           <img class="book-cover" src="{{ review.cover_image }}">
           <h2 class="book-title">
-            <a href="detail.html">{{ review.title }}</a>
+            <a href="{% url "review_detail" review.id %}">{{ review.title }}</a>
           </h2>
           <div class="book-rating">{{ review.rating }}</div>
           <div class="book-authors">
